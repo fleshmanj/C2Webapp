@@ -13,11 +13,13 @@ app = Flask(__name__)
 @app.route('/')
 # ‘/’ URL is bound with hello_world() function.
 def hello_world():
-    return 'Hello World'
+    return 'This is my Main computer'
+
 
 @app.route('/hello/<name>')
 def hello_name(name):
-   return 'Hello %s!' % name
+    return 'Hello %s!' % name
+
 
 @app.route('/fu')
 def fu():
@@ -38,8 +40,31 @@ def login():
         return render_template('login.html')
 
 
+class Node():
+
+    def __init__(self, C2_address="0.0.0.0", port=80):
+        self.id = None
+        self.port = port
+        self.C2_address = C2_address
+
+    @app.route('/id')
+    def show_id(self):
+        return self.id
+
+
+    def set_id(self, id):
+        self.id = id
+
+
+    @app.route('/set_id/<id>')
+    def success(self, id):
+        self.set_id(id)
+        return 'welcome %s' % id
+
+
 # main driver function
 if __name__ == '__main__':
     # run() method of Flask class runs the application
     # on the local development server.
-    app.run(debug=True)
+    client = Node()
+    app.run(debug=True, host="0.0.0.0", port=80)
