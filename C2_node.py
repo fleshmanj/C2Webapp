@@ -12,7 +12,7 @@ C2_ADDRESS = None
 node_list = []
 
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def index():
     return "Welcome to command and control"
 
