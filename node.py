@@ -81,10 +81,13 @@ def uptime():
 #     else:
 #         return Response(status=403)
 
-@app.route("/")
+@app.route("/ping")
 def index():
-    response = r.get('https://api.github.com')
-    return str(response)
+    response = r.get('https://api.github.com').status_code()
+    if response == 200:
+        return "Ping successful"
+    else:
+        return str(response)
 
 
 
