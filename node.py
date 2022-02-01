@@ -83,7 +83,7 @@ def uptime():
 
 @app.route("/ping")
 def ping():
-    response = r.get(f'http://{C2_ADDRESS}')
+    response = r.get(f'http://{C2_ADDRESS}/')
     if response.status_code == 200:
         return "Ping successful"
     else:

@@ -14,6 +14,7 @@ node_list = []
 
 @app.route('/')
 def index():
+    print("trying to connect")
     return Response(status=200)
 
 @app.route('/status', methods=['GET'])
