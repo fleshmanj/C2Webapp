@@ -16,7 +16,7 @@ node_list = []
 def index():
     if request.method == 'GET':
         print("trying to connect")
-        return "Welcome to command and control."
+        return Response(status=200)
     else:
         return Response(status=403)
 
