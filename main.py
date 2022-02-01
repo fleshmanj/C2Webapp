@@ -1,6 +1,7 @@
 # Importing flask module in the project is mandatory
 # An object of Flask class is our WSGI application.
 from flask import Flask, redirect, url_for, request, render_template
+from flask.views import MethodView
 
 # Flask constructor takes the name of 
 # current module (__name__) as argument.
@@ -40,25 +41,21 @@ def login():
         return render_template('login.html')
 
 
-class Node():
+class Node(object):
 
     def __init__(self, C2_address="0.0.0.0", port=80):
         self.id = None
         self.port = port
         self.C2_address = C2_address
+        print("Init called")
 
     @app.route('/id')
     def show_id(self):
         return self.id
 
-
+    @app.route('/set_id/<id>')
     def set_id(self, id):
         self.id = id
-
-
-    @app.route('/set_id/<id>')
-    def success(self, id):
-        self.set_id(id)
         return 'welcome %s' % id
 
 
