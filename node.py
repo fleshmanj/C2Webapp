@@ -80,10 +80,10 @@ def uptime():
 #     else:
 #         return Response(status=403)
 
-def ping_C2():
-    global C2_ADDRESS
-    temp = r.get(f"https://{C2_ADDRESS}").status_code == 200
-    print(f"Up status is {temp}")
+@app.route("/")
+def index():
+    temp = r.get(url="http://C2_ADDRESS")
+    return "Response: " + temp
 
 
 
@@ -94,5 +94,5 @@ if __name__ == '__main__':
 
     start = time.time()
     app.run(debug=True, host="0.0.0.0", port=80)
-    ping_C2()
+
 

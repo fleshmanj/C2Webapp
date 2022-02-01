@@ -8,7 +8,7 @@ from flask import Flask, redirect, url_for, request, render_template, Response
 
 app = Flask(__name__)
 
-C2_ADDRESS = args.ip
+C2_ADDRESS = None
 node_list = []
 
 
@@ -61,7 +61,5 @@ def uptime():
 
 # main driver function
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Creates a client Node that reports back to the C2 Node.')
-    parser.add_argument("-i", "--ip", type=str, help='IP address for C2 node', default="0.0.0.0")
     start = time.time()
     app.run(debug=True, host="0.0.0.0", port=80)
