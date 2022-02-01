@@ -3,22 +3,18 @@
 import datetime
 import time
 import argparse
-import requests as r
 
 from flask import Flask, redirect, url_for, request, render_template, Response
-
-parser = argparse.ArgumentParser(description='Creates a client Node that reports back to the C2 Node.')
-parser.add_argument("-i", "--ip", type=str, help='IP address for C2 node', default="0.0.0.0")
-args = parser.parse_args()
 
 app = Flask(__name__)
 
 C2_ADDRESS = args.ip
-running = None
+node_list = []
+
 
 
 @app.route('/status', methods=['GET'])
-def status():
+def get_status():
     global running
     if running is not None:
         if running:
@@ -62,36 +58,10 @@ def uptime():
         return f"Server runtime is {ndt - sdt}."
 
 
-# @app.route('/C2_address', methods=['GET'])
-# def C2_address():
-#     global C2_ADDRESS
-#     if C2_ADDRESS is None:
-#         return render_template("C2_address.html")
-#     else:
-#         return Response(status=403)
-#
-#
-# @app.route('/set_C2_address', methods=['POST'])
-# def set_C2_address():
-#     global C2_ADDRESS
-#     if C2_ADDRESS is None:
-#         C2_ADDRESS = request.form['C2address']
-#         return Response(status=200)
-#     else:
-#         return Response(status=403)
-
-def ping_C2():
-    global C2_ADDRESS
-    temp = r.get(f"http://{C2_ADDRESS}")
-    print(temp)
-
-
 
 # main driver function
 if __name__ == '__main__':
-    # run() method of Flask class runs the application
-    # on the local development server.
-
+    parser = argparse.ArgumentParser(description='Creates a client Node that reports back to the C2 Node.')
+    parser.add_argument("-i", "--ip", type=str, help='IP address for C2 node', default="0.0.0.0")
     start = time.time()
     app.run(debug=True, host="0.0.0.0", port=80)
-
