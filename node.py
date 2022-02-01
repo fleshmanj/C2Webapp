@@ -4,6 +4,7 @@ import datetime
 import time
 import argparse
 import requests as r
+import urllib
 
 from flask import Flask, redirect, url_for, request, render_template, Response
 
@@ -82,7 +83,7 @@ def uptime():
 
 @app.route("/")
 def index():
-    temp = r.get(url="http://C2_ADDRESS:80")
+    temp = r.request(method="GET", url=f"http://{C2_ADDRESS}/").status_code
     return "Response: " + temp
 
 
