@@ -5,44 +5,46 @@ import time
 
 from flask import Flask, redirect, url_for, request, render_template, Response
 
-
-
-
-# Flask constructor takes the name of 
-# current module (__name__) as argument.
 app = Flask(__name__)
 
 C2_ADDRESS = None
-
-# The route() function of the Flask class is a decorator,
-# which tells the application which URL should call 
-# the associated function.
-@app.route('/')
-# ‘/’ URL is bound with hello_world() function.
-def hello_world():
-    return 'This is my Main computer'
+running = None
 
 
-@app.route('/hello/<name>')
-def hello_name(name):
-    return 'Hello %s!' % name
-
-
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-    if request.method == 'POST':
-        user = request.form['nm']
-        return redirect(url_for('success', name=user))
+@app.route('/status', methods=['GET'])
+def status():
+    global running
+    if running is not None:
+        if running:
+            return Response(status=200)
+        else:
+            return Response(status=403)
     else:
-        return render_template('login.html')
+        return Response(status=400)
 
-@app.route('/id')
-def show_id():
-    return
 
-@app.route('/set_id/<id>')
-def set_id(id):
-    return 'welcome %s' % id
+@app.route('/start', methods=['GET'])
+def start():
+    global running
+    if running is None:
+        running = True
+        return Response(status=200)
+    if running:
+        return Response(status=403)
+    else:
+        running = True
+        return Response(status=200)
+
+@app.route('/stop', methods=['GET'])
+def stop():
+    global running
+    if running is None:
+        return Response(status=403)
+    if running:
+        running = False
+        return Response(status=200)
+    else:
+        return Response(status=403)
 
 
 @app.route('/uptime', methods=['GET'])
@@ -54,16 +56,23 @@ def uptime():
         return f"Server runtime is {ndt - sdt}."
 
 
-@app.route('/set_C2_address/<address>', methods=['POST'])
-def set_C2_address(address):
+@app.route('/C2_address', methods=['GET'])
+def C2_address():
     global C2_ADDRESS
     if C2_ADDRESS is None:
-        C2_ADDRESS = address
-        return Response(status=200)
+        return render_template("C2_address.html")
     else:
         return Response(status=403)
 
 
+@app.route('/set_C2_address', methods=['POST'])
+def set_C2_address():
+    global C2_ADDRESS
+    if C2_ADDRESS is None:
+        C2_ADDRESS = request.form['C2address']
+        return Response(status=200)
+    else:
+        return Response(status=403)
 
 
 # main driver function
