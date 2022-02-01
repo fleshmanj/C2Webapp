@@ -84,7 +84,7 @@ def uptime():
 @app.route("/")
 def index():
     response = r.get('https://api.github.com')
-    return response
+    return str(response)
 
 
 
