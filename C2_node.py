@@ -12,10 +12,13 @@ C2_ADDRESS = None
 node_list = []
 
 
-@app.route('/')
+@app.route('/',methods=['GET'])
 def index():
-    print("trying to connect")
-    return Response(status=200)
+    if request.method == 'GET':
+        print("trying to connect")
+        return "Welcome to command and control."
+    else:
+        return Response(status=403)
 
 @app.route('/status', methods=['GET'])
 def get_status():
