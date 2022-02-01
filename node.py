@@ -82,8 +82,8 @@ def uptime():
 
 def ping_C2():
     global C2_ADDRESS
-    temp = r.get(f"http://{C2_ADDRESS}")
-    print(temp)
+    temp = r.get(f"https://{C2_ADDRESS}").status_code == 200
+    print(f"Up status is {temp}")
 
 
 
