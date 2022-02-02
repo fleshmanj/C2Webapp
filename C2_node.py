@@ -1,10 +1,8 @@
-# Importing flask module in the project is mandatory
-# An object of Flask class is our WSGI application.
 import datetime
 import time
 import argparse
-
-from flask import Flask, redirect, url_for, request, render_template, Response
+import requests
+from flask import Flask, request, render_template, Response
 
 app = Flask(__name__)
 
@@ -12,62 +10,49 @@ C2_ADDRESS = None
 node_list = []
 
 
-@app.route('/',methods=['GET'])
+class Node:
+    def __init__(self, name, ip, port):
+        self.name = name
+        self.ip = ip
+        self.port = port
+
+
+@app.route('/', methods=['GET'])
 def index():
-    if request.method == 'GET':
-
-        print("trying to connect")
-        return Response(status=200)
-    else:
-        return Response(status=403)
-
-@app.route('/status', methods=['GET'])
-def get_status():
-    global running
-    if running is not None:
-        if running:
-            return Response(status=200)
-        else:
-            return Response(status=403)
-    else:
-        return Response(status=400)
+    statuses = []
+    for n in node_list:
+        data = requests.get(f"http://{n.ip}:{n.port}/status")
+        statuses.append(data.status_code)
+    return str(statuses)
 
 
 @app.route('/start', methods=['GET'])
 def start():
-    global running
-    if running is None:
-        running = True
-        return Response(status=200)
-    if running:
-        return Response(status=403)
-    else:
-        running = True
-        return Response(status=200)
+    global node_list
+    for n in node_list:
+        data = requests.get(f"http://{n.ip}:{n.port}/start")
+    return Response(status=200)
+
 
 @app.route('/stop', methods=['GET'])
 def stop():
-    global running
-    if running is None:
-        return Response(status=403)
-    if running:
-        running = False
-        return Response(status=200)
-    else:
-        return Response(status=403)
+    global node_list
+    for n in node_list:
+        data = requests.get(f"http://{n.ip}:{n.port}/stop")
+    return Response(status=200)
 
 
-@app.route('/uptime', methods=['GET'])
-def uptime():
-    global start
-    sdt = datetime.datetime.fromtimestamp(start)
-    ndt = datetime.datetime.now()
-    if request.method == 'GET':
-        return f"Server runtime is {ndt - sdt}."
+def initial():
+    global node_list
+    for n in node_list:
+        requests.get(f"http://{n.ip}:{n.port}/set_C2_address")
 
 
-
-# main driver function
 if __name__ == '__main__':
     start = time.time()
-    app.run(debug=True, host="0.0.0.0", port=80)
+    l = Node("laptop", '192.168.1.1', 80)
+    node_list.append(l)
+    p = Node("pi", "192.168.1.1", 80)
+    node_list.append(p)
+    initial()
+    app.run(host="0.0.0.0", port=80)

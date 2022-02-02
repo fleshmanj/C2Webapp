@@ -1,20 +1,11 @@
-# Importing flask module in the project is mandatory
-# An object of Flask class is our WSGI application.
 import datetime
 import time
-import argparse
-import requests as r
-import urllib
 
-from flask import Flask, redirect, url_for, request, render_template, Response
-
-parser = argparse.ArgumentParser(description='Creates a client Node that reports back to the C2 Node.')
-parser.add_argument("-i", "--ip", type=str, help='IP address for C2 node', default="0.0.0.0")
-args = parser.parse_args()
+from flask import Flask, request, Response
 
 app = Flask(__name__)
 
-C2_ADDRESS = args.ip
+C2_ADDRESS = None
 running = None
 
 
@@ -42,6 +33,7 @@ def start():
         running = True
         return Response(status=200)
 
+
 @app.route('/stop', methods=['GET'])
 def stop():
     global running
@@ -63,41 +55,16 @@ def uptime():
         return f"Server runtime is {ndt - sdt}."
 
 
-# @app.route('/C2_address', methods=['GET'])
-# def C2_address():
-#     global C2_ADDRESS
-#     if C2_ADDRESS is None:
-#         return render_template("C2_address.html")
-#     else:
-#         return Response(status=403)
-#
-#
-# @app.route('/set_C2_address', methods=['POST'])
-# def set_C2_address():
-#     global C2_ADDRESS
-#     if C2_ADDRESS is None:
-#         C2_ADDRESS = request.form['C2address']
-#         return Response(status=200)
-#     else:
-#         return Response(status=403)
-
-@app.route("/ping")
-def ping():
-    response = r.post(f'http://{C2_ADDRESS}/')
-    print(f"http://")
-    if response.status_code == 200:
-        return "Ping successful"
+@app.route('/set_C2_address', methods=['GET'])
+def set_C2_address():
+    global C2_ADDRESS
+    if C2_ADDRESS is None:
+        C2_ADDRESS = request.remote_addr
+        return Response(status=200)
     else:
-        return str(response)
+        return Response(status=403)
 
 
-
-# main driver function
 if __name__ == '__main__':
-    # run() method of Flask class runs the application
-    # on the local development server.
-    ping()
     start = time.time()
-    app.run(debug=True, host="0.0.0.0", port=80)
-
-
+    app.run(host="0.0.0.0", port=80)
