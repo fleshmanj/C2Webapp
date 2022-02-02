@@ -15,6 +15,7 @@ node_list = []
 @app.route('/',methods=['GET'])
 def index():
     if request.method == 'GET':
+
         print("trying to connect")
         return Response(status=200)
     else:

